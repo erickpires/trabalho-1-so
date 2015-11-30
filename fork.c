@@ -12,7 +12,7 @@
 
 void multiply_matrix(int);
 
-int matrix_size = 3;
+int matrix_size = 500;
 
 int* matrix_a;
 int* matrix_b;
@@ -21,8 +21,7 @@ int* matrix_c;
 void alloc_matrices() {
 
 // Reference: http://stackoverflow.com/questions/13274786/how-to-share-memory-between-process-fork
-//  glob_var = mmap(NULL, sizeof *glob_var, PROT_READ | PROT_WRITE,
-//                    MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+//
 	matrix_a = (int*) mmap(NULL, matrix_size * matrix_size * sizeof(int), PROT_READ | PROT_WRITE,
 	                       MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	matrix_b = (int*) mmap(NULL, matrix_size * matrix_size * sizeof(int), PROT_READ | PROT_WRITE,
@@ -86,7 +85,7 @@ int main(int argc, char** argv){
 	}
 
 	for(int i = 0; i < matrix_size; i++) {
-		wait(NULL);
+		wait(NULL); // Waiting for all child processes.
 	}
 
 	puts("Matrix C");

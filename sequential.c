@@ -51,14 +51,6 @@ inline void multiply_matrix(int line) {
 	}
 }
 
-void* pthread_mul_matrix(void* _tid) {
-	int tid = *((int*) _tid);
-
-	multiply_matrix(tid);
-
-	return NULL;
-}
-
 
 int main(int argc, char** argv){
 	srand(time(NULL));
@@ -74,16 +66,8 @@ int main(int argc, char** argv){
 	puts("Matrix B");
 	print_matrix(matrix_b);
 
-	pthread_t* threads = (pthread_t*) malloc(matrix_size * sizeof(pthread_t));
-	int* tids = (int*) malloc(matrix_size * sizeof(int));
-
-	for(int thread_id = 0; thread_id < matrix_size; thread_id++) {
-		tids[thread_id] = thread_id;
-		pthread_create(threads + thread_id, NULL, pthread_mul_matrix, (void*) (tids + thread_id));
-	}
-
-	for(int thread_id = 0; thread_id < matrix_size; thread_id++) {
-		pthread_join(threads[thread_id], NULL);
+	for(int i = 0; i < matrix_size; i++) {
+		multiply_matrix(i);
 	}
 
 	puts("Matrix C");
