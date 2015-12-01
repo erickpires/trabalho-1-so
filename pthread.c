@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
+#include "timer.h"
 
 #define get_matrix_element(m,i,j) (m[i * matrix_size + j])
 #define set_matrix_element(m,i,j,value) (m[i * matrix_size + j] = value)
@@ -31,12 +32,14 @@ void init_matrix(int* matrix) {
 }
 
 void print_matrix(int* matrix) {
+	puts("[");
 	for(int i = 0; i < matrix_size; i++) {
 		for(int j = 0; j < matrix_size; j++) {
 			printf("%02d ", get_matrix_element(matrix, i, j));
 		}
 		printf("\n");
 	}
+	puts("]");
 	printf("\n");
 }
 
@@ -61,6 +64,13 @@ void* pthread_mul_matrix(void* _tid) {
 
 
 int main(int argc, char** argv){
+	if(argc > 1) {
+		matrix_size = atoi(argv[1]);
+	}
+	else {
+		matrix_size = 3;
+	}
+
 	srand(time(NULL));
 
 	alloc_matrices();
@@ -69,13 +79,14 @@ int main(int argc, char** argv){
 	init_matrix(matrix_a);
 	init_matrix(matrix_b);
 
-	puts("Matrix A");
-	print_matrix(matrix_a);
-	puts("Matrix B");
-	print_matrix(matrix_b);
-
 	pthread_t* threads = (pthread_t*) malloc(matrix_size * sizeof(pthread_t));
 	int* tids = (int*) malloc(matrix_size * sizeof(int));
+
+	double start;
+	double finish;
+	double elapsed;
+
+	GET_TIME(start);
 
 	for(int thread_id = 0; thread_id < matrix_size; thread_id++) {
 		tids[thread_id] = thread_id;
@@ -86,8 +97,18 @@ int main(int argc, char** argv){
 		pthread_join(threads[thread_id], NULL);
 	}
 
-	puts("Matrix C");
-	print_matrix(matrix_c);
+	GET_TIME(finish);
+	elapsed = finish - start;
+
+	printf("%lf\n", elapsed);
+	// printf("A = ");
+	// print_matrix(matrix_a);
+	// printf("B = ");
+	// print_matrix(matrix_b);
+	// printf("C = ");
+	// print_matrix(matrix_c);
+
+	// puts("A * B - C");
 
     return 0;
 }
