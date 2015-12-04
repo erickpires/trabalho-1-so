@@ -16,6 +16,8 @@ int* matrix_a;
 int* matrix_b;
 int* matrix_c;
 
+double start_time;
+
 void alloc_matrices() {
 	matrix_a = (int*) calloc(matrix_size * matrix_size, sizeof(int));
 	matrix_b = (int*) calloc(matrix_size * matrix_size, sizeof(int));
@@ -57,8 +59,15 @@ inline void multiply_matrix(int line) {
 void* pthread_mul_matrix(void* _tid) {
 	int tid = *((int*) _tid);
 
-	multiply_matrix(tid);
+	double start;
+	double finish;
 
+	GET_TIME(start);
+	multiply_matrix(tid);
+	GET_TIME(finish);
+
+	printf("Thread_%02d,%lf,%lf\n", tid, start - start_time, finish - start_time);
+	//printf("Thread: %d finish - %lf\n", tid, finish - start_time);
 	return NULL;
 }
 
@@ -87,6 +96,7 @@ int main(int argc, char** argv){
 	double elapsed;
 
 	GET_TIME(start);
+	start_time = start;
 
 	for(int thread_id = 0; thread_id < matrix_size; thread_id++) {
 		tids[thread_id] = thread_id;
@@ -100,7 +110,7 @@ int main(int argc, char** argv){
 	GET_TIME(finish);
 	elapsed = finish - start;
 
-	printf("%lf\n", elapsed);
+	//printf("%lf\n", elapsed);
 	// printf("A = ");
 	// print_matrix(matrix_a);
 	// printf("B = ");

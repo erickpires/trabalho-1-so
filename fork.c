@@ -89,7 +89,17 @@ int main(int argc, char** argv){
 		pid_t pid = fork();
 
 		if(pid == 0) {
+			double proc_start;
+			double proc_finish;
+
+			GET_TIME(proc_start);
 			multiply_matrix(i);
+			GET_TIME(proc_finish);
+
+			printf("Process_%02d,%lf,%lf\n", i, proc_start - start, proc_finish - start);
+			// printf("Process: %d begin - %lf\n", i, proc_start - start);
+			// printf("Process: %d finish - %lf\n", i, proc_finish - start);
+
 			return 0; // All the child processes die here
 		}
 	}
@@ -101,7 +111,7 @@ int main(int argc, char** argv){
 	GET_TIME(finish);
 	elapsed = finish - start;
 
-	printf("%lf\n", elapsed);
+	// printf("%lf\n", elapsed);
 	// printf("A = ");
 	// print_matrix(matrix_a);
 	// printf("B = ");
